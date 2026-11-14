@@ -6,3 +6,7 @@ mlruns/
 *.pt
 *.pkl
 data/processed/
+mlops/mlflow.db
+mlops/mlartifacts/
+*.joblib
+serving/_download/

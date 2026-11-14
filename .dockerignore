@@ -1,0 +1,4 @@
+*
+!backend/
+!serving/model/
+**/__pycache__

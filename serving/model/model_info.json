@@ -1,0 +1,26 @@
+{
+  "model_name": "smartmaint-anomaly-detector",
+  "version": 1,
+  "alias": "champion",
+  "run_id": "b300823db9ee426aba75752321f41bd6",
+  "threshold": 0.6764959918148827,
+  "features": [
+    "TP2",
+    "TP3",
+    "H1",
+    "DV_pressure",
+    "Reservoirs",
+    "Oil_temperature",
+    "Motor_current",
+    "COMP",
+    "DV_eletric",
+    "Towers",
+    "MPG",
+    "LPS",
+    "Pressure_switch",
+    "Oil_level",
+    "Caudal_impulses"
+  ],
+  "window_rows": 180,
+  "rule_load_threshold": 0.9
+}
