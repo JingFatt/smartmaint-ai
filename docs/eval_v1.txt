@@ -1,0 +1,26 @@
+sanity check -> FP=1127 (expect ~1127), FN=996 (expect ~996)
+
+== 行级指标(同一个测试集)==
+IsolationForest  ROC-AUC=0.9981  PR-AUC=0.9753
+rule: load30     ROC-AUC=0.9992  PR-AUC=0.9977
+
+== 各类时段被判为异常的比例 ==
+           group   rows  IF_flagged_%  rule_flagged_%
+     normal_test 209631           0.5             0.0
+       failure 1   8566         100.0            98.1
+       failure 2   2360          98.6            96.9
+       failure 3  17315         100.0            99.5
+       failure 4   1622          40.6            90.1
+ uncertain (Mar)  16879          50.1            81.4
+uncertain (Apr+)  19392          87.7            85.4
+          frozen  50425          14.1             0.0
+
+== 报警延迟(分钟,相对报告的故障开始;负数 = 提前报警)==
+failure 1: IF=38.8  rule=50.7
+failure 2: IF=1.3  rule=11.6
+failure 3: IF=5.1  rule=15.2
+failure 4: IF=165.6  rule=22.1
+
+== 正常测试期的误报(共 31 天)==
+alarm_if: 0 次报警,约 0.00 次/天
+alarm_rule: 1 次报警,约 0.03 次/天
