@@ -44,14 +44,15 @@ run = client.get_run(mv.run_id)
 thr = float(run.data.params["threshold"])
 
 # 4. 核对:导出的模型必须和原来的 joblib 模型给出相同的分数
-X = pd.read_parquet("data/processed/metropt3_flagged.parquet",
-                    columns=FEATURES).head(500).astype("float64").to_numpy()
-old_model = joblib.load("models/anomaly_detection/artifacts/isolation_forest.joblib")
-old_scaler = joblib.load("models/anomaly_detection/artifacts/scaler.joblib")
-old = -old_model.score_samples(old_scaler.transform(X))
-new = -pipe.score_samples(X)
-assert np.allclose(old, new), "导出的模型和原模型分数不一致"
-print("score check: OK (500 rows identical)")
+if int(mv.version) == 1:
+    X = pd.read_parquet("data/processed/metropt3_flagged.parquet",
+                        columns=FEATURES).head(500).astype("float64").to_numpy()
+    old_model = joblib.load("models/anomaly_detection/artifacts/isolation_forest.joblib")
+    old_scaler = joblib.load("models/anomaly_detection/artifacts/scaler.joblib")
+    old = -old_model.score_samples(old_scaler.transform(X))
+    new = -pipe.score_samples(X)
+    assert np.allclose(old, new), "导出的模型和原模型分数不一致"
+    print("score check: OK (500 rows identical)")
 
 # 5. 保存给 API 使用的文件
 joblib.dump(pipe, OUT / "model.joblib")

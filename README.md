@@ -159,10 +159,34 @@ tests/          API tests
 docs/           eval output, figures, MetroPT-3 data description
 ```
 
+## Model promotion gate
+
+A new model version is registered as a challenger and only replaces `champion` if it passes a fixed gate (`mlops/promote.py`). The thresholds were fixed before the first challenger was trained:
+
+1. No reported failure's detection rate drops by more than 2 percentage points.
+2. False positives are at most 1.10x the champion's.
+3. PR-AUC improves by at least 0.005, or the worst failure's detection rate improves by at least 5 points.
+
+If a challenger is promoted, the old champion keeps the alias `previous` for rollback. Every decision is appended to `docs/promotion_log.csv`.
+
+The first challenger (same model family, 300 trees, 4096 samples per tree) was rejected:
+
+| Metric | Champion (v1) | Challenger |
+|---|---|---|
+| ROC-AUC | 0.998 | 0.986 |
+| PR-AUC | 0.975 | 0.852 |
+| Precision | 0.962 | 0.661 |
+| Recall | 0.967 | 0.073 |
+| False positives (rows) | 1127 | 1122 |
+| Failures 1 / 2 / 3 / 4, rows flagged | 100 / 98.6 / 100 / 40.6 % | 0.6 / 0.5 / 9.2 / 32.7 % |
+
+The challenger had almost the same false-positive count and an ROC-AUC only 0.013 lower, so a gate based on those two numbers would have let it through. The per-failure check caught it. The cause was not investigated; the ranking quality (ROC-AUC) is still decent, so the validation-based alarm threshold may not suit this configuration.
+
+The gate is evaluated on the same four-failure test set as the main evaluation, so it demonstrates the mechanism. A production gate would need fresh data.
+
 ## Not done yet
 
 - Drift monitoring and a scheduled retraining job
-- A champion / challenger promotion rule
 - CI pipeline (lint, tests, image build)
 - Dashboard
 - Windowed features for the Isolation Forest, to address failure 4
